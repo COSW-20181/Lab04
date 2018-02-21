@@ -16,6 +16,10 @@
  */
 package edu.eci.cosw.jpa.sample;
 
+import edu.eci.cosw.jpa.sample.model.Curso;
+import edu.eci.cosw.jpa.sample.model.Estudiante;
+import java.util.HashSet;
+import java.util.Set;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -33,6 +37,27 @@ public class SimpleMainApp {
         SessionFactory sf=getSessionFactory();
         Session s=sf.openSession();
         Transaction tx=s.beginTransaction();
+        
+        Curso c1 = new Curso(1, "Costruccion de Software", "COSW");
+        Curso c2 = new Curso(2, "Soluciones de Software", "SOSW");
+        Estudiante e1 = new Estudiante(01234, "Felipe");
+        Estudiante e2 = new Estudiante(56789, "Pipe");
+        Set<Curso> cursos = new HashSet();
+        cursos.add(c2);cursos.add(c1);
+        Set<Estudiante> estudiantes = new HashSet();
+        estudiantes.add(e2);estudiantes.add(e1);
+        e1.setCursos(cursos);
+        e2.setCursos(cursos);
+        c1.setEstudianteses(estudiantes);
+        c2.setEstudianteses(estudiantes);
+        s.saveOrUpdate(e1);s.saveOrUpdate(e2);
+        s.saveOrUpdate(c1);s.saveOrUpdate(c2);
+        Estudiante e  = (Estudiante) s.load(Estudiante.class, 12345);
+        System.out.println("--Cursos Felipe--");
+        e.getCursos().forEach(System.out::println);
+        Curso c = (Curso) s.load(Curso.class, 5);
+        System.out.println("--Cursos Pipe--");
+        c.getEstudianteses().forEach(System.out::println);
         
         tx.commit(); 
         s.close();

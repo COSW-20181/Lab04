@@ -16,6 +16,12 @@
  */
 package edu.eci.cosw.jpa.sample;
 
+import edu.eci.cosw.jpa.sample.model.Consulta;
+import edu.eci.cosw.jpa.sample.model.Paciente;
+import edu.eci.cosw.jpa.sample.model.PacienteId;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -32,8 +38,16 @@ public class SimpleMainApp {
     public static void main(String a[]){
         SessionFactory sf=getSessionFactory();
         Session s=sf.openSession();
+        Paciente x = (Paciente) s.load(Paciente.class, new PacienteId(1,"cc"));
         Transaction tx=s.beginTransaction();
-        
+        System.out.println("--Nombre Paciente--");
+        System.out.println(x.getNombre());
+        System.out.println("--Fecha Nacimiento--");
+        System.out.println(x.getFechaNacimiento());
+        Set<Consulta> tmp = x.getConsultas();
+        tmp.add(new Consulta(new Date(), "Pipe"));
+        x.setConsultas(tmp);
+        s.saveOrUpdate(x);
         tx.commit();    
         s.close();
         sf.close();
